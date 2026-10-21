@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 const MAIN = "https://codecraft-ba.vercel.app";
 
 // Floating note on every demo: makes clear it's a sample and sends interested visitors to CodeCraft.
 export default function DemoBadge({ dark = false }: { dark?: boolean }) {
   const [hidden, setHidden] = useState(false);
-  if (hidden) return null;
+  // Inside the live showcase on codecraft.ba the frame already sells the demo, so skip the badge there.
+  const embedded = useSyncExternalStore(
+    () => () => {},
+    () => window.self !== window.top,
+    () => false,
+  );
+  if (hidden || embedded) return null;
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-3 z-[90] flex justify-center px-3 sm:justify-start sm:px-5">
       <div
